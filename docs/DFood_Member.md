@@ -9,11 +9,11 @@
 
 ##团队成员
     
- 	       姓名	        学号	                  博客链接	                             Github链接     
+ 	       姓名	        学号	                  博客链接	                     Github链接     
     队长  黄冠锋 201406114134    http://www.cnblogs.com/hgf520/  https://github.com/crown999
-	    卢利钦	201406114130    http://www.cnblogs.com/luliqin/ https://github.com/luliqin
-	    赖新耀	201406114129	http://www.cnblogs.com/lieson/ https://github.com/Laixinyao
-	    许恒蓝	201406114122	http://www.cnblogs.com/xhlbk/  https://github.com/xuhenglan
+	     卢利钦	201406114130    http://www.cnblogs.com/luliqin/ https://github.com/luliqin
+	     赖新耀	201406114129	http://www.cnblogs.com/lieson/ https://github.com/Laixinyao
+	     许恒蓝	201406114122	http://www.cnblogs.com/xhlbk/  https://github.com/xuhenglan
   
 
  * 团队博客地址：http://www.cnblogs.com/hgf520/
