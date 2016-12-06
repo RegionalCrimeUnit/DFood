@@ -6,10 +6,10 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" /> 
   <meta name="author" content="" /> 
   <!-- Le styles --> 
-  <link href="file:///D|/phpStudy/WWW/2/css/bootstrap.css" rel="stylesheet" /> 
-  <link href="file:///D|/phpStudy/WWW/2/css/buttons.css" rel="stylesheet" /> 
-  <link href="file:///D|/phpStudy/WWW/2/css/flat.css" rel="stylesheet" />
-  <link href="file:///D|/phpStudy/WWW/2/css/font-awesome.css" rel="stylesheet" />
+  <link href="css/bootstrap.css" rel="stylesheet" /> 
+  <link href="css/buttons.css" rel="stylesheet" /> 
+  <link href="css/flat.css" rel="stylesheet" />
+  <link href="css/font-awesome.css" rel="stylesheet" />
   
   <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements --> 
   <!--[if lt IE 9]>
@@ -53,7 +53,9 @@
                     </div>
                     <div class="col-xs-6">
                         <p class="notice tar">
+                            共计
                             <span class="price" id="price_txt">
+                                315元
                             </span>
                         </p>
                     </div>
@@ -75,6 +77,7 @@
 </div>
 
 
+
 <div id="loadingView" class="viewer">
     <div class="container">
         <div class="col-md-12 clearfix loading">
@@ -83,8 +86,8 @@
 </div><!-- Le javascript
     ================================================== --> 
   <!-- Placed at the end of the document so the pages load faster --> 
-  <script src="file:///D|/phpStudy/WWW/2/js/jquery.js"></script> 
-  <script src="file:///D|/phpStudy/WWW/2/js/bootstrap.min.js"></script> 
+  <script src="js/jquery.js"></script> 
+  <script src="js/bootstrap.min.js"></script> 
   <script>
 		var iG = iG||{};
         if(window.localStorage){
@@ -98,13 +101,35 @@
             iG = iG||{};
         }
 		$(function(){
-			setTimeout(function () { window.scrollTo(0, 1); }, 0);		
+			setTimeout(function () { window.scrollTo(0, 1); }, 0);
+            
+            //$.ajax(
+            //    success:function(){
+            //    
+            //    
+            //    }
+            //)
+			/*
+			$.ajax(
+					{
+						type:"post",
+						dataType:"json",
+						url:"getAllDish",
+		                success:function(result){
+		                	//alert(result);
+							iG.items = result;
+							init();//ajax成功后执行init();
+		                }
+					}
+			)
+			*/
+			
             setTimeout(function () {
                 iG.items={
             "●热卖产品":[
-					{id:"1",name:"原味板烧鸡腿堡",cls:"热卖产品",price:"18",sels:"12",imageUrl:"images/1.jpg"},
-					{id:"2",name:"麦趣鸡盒（含那么大鸡排）升级烧烤风味鸡翅",sels:"12",cls:"热卖产品",price:"81",imageUrl:"images/2.jpg"},
-					{id:"3",name:"烧烤风味鸡翅",cls:"热卖产品",price:"11",sels:"12",imageUrl:"images/3.jpg"},
+					{id:"1",name:"原味板烧鸡腿堡",cls:"热卖产品",price:"18",sels:"145",imageUrl:"images/1.jpg"},
+					{id:"2",name:"麦趣鸡盒（含那么大鸡排）升级烧烤风味鸡翅",cls:"热卖产品",price:"81",sels:"75",imageUrl:"images/2.jpg"},
+					{id:"3",name:"烧烤风味鸡翅",cls:"热卖产品",price:"11",sels:"36",imageUrl:"images/3.jpg"},
 					{id:"4",name:"芒果派",cls:"热卖产品",price:"7",sels:"26",imageUrl:"images/4.jpg"},
 					{id:"5",name:"3人豪情派对餐",cls:"热卖产品",price:"98",sels:"12",imageUrl:"images/5.jpg"},
 					{id:"6",name:"麦乐家庭餐",cls:"热卖产品",price:"80",sels:"32",imageUrl:"images/6.jpg"}
@@ -147,9 +172,31 @@
                 init();//ajax成功后执行init(); 
             }, 20);//模拟ajax请求时间
 
-  
+            $("body").on("click",".list_id_respone",function(){
+				iG["order"] = iG["order"]||{};
+				var index = $(this).attr("data_id");
+				
+				if(iG.order[index]){
+					iG.order[index].counter = iG.order[index].counter + 1;
+				}else{
+					var obj = getIndex(index);
+					iG.order[index] = obj;
+					iG.order[index].counter = 1;
+				}
+				if(window.localStorage){
+                    localStorage["zaiG"] = JSON.stringify(iG);
+                }
+			});
 			
-	
+			$("#myOrder").click(function(){
+				$(".wrapper,#wrapper").removeClass("show");
+				$(".wrapper,#wrapper").removeClass("hide");
+				$("#wrapper").addClass("hide");
+				$("#wrapper2").addClass("show")
+				//$("#J_order_Manager").siblings("div").remove();
+				$("#J_order_list").html(buildOrder(iG.order));
+				$("#price_txt").html(countPrice() + "元");
+			});
 			$("body").on("click","#addOrder",function(){
 				$(".wrapper,#wrapper").removeClass("show");
 				$(".wrapper,#wrapper").removeClass("hide");
@@ -176,7 +223,87 @@
 					};
 				}
 			});
-		
+			$("body").on("click","#imgViewer",function(){
+				$("#imgViewer").hide();
+			});
+            
+			$("body").on("click",".counter_plus",function(){
+				iG["order"] = iG["order"]||{};
+				var index = $(this).attr("data_id");
+				
+				if(iG.order[index]){
+					iG.order[index].counter = iG.order[index].counter + 1;
+				}else{
+					var obj = getIndex(index);
+					iG.order[index] = obj;
+					iG.order[index].counter = 1;
+				}
+				$(this).siblings(".nocounter").html(iG.order[index].counter);
+				$("#price_txt").html(countPrice() + "元");
+                if(window.localStorage){
+                    localStorage["zaiG"] = JSON.stringify(iG);
+                }
+			});
+            
+			$("body").on("click",".counter_minus",function(){
+				iG["order"] = iG["order"]||{};
+				var index = $(this).attr("data_id");
+				if(iG.order[index].counter === 0)return;
+				if(iG.order[index]){
+					iG.order[index].counter = iG.order[index].counter - 1;
+				}else{
+					var obj = getIndex(index);
+					iG.order[index] = obj;
+					iG.order[index].counter = 1;
+				}
+				$(this).siblings(".nocounter").html(iG.order[index].counter);
+				$("#price_txt").html(countPrice() + "元");
+                if(window.localStorage){
+                    localStorage["zaiG"] = JSON.stringify(iG);
+                }
+			});
+            
+			$("body").on("click","#clearOder",function(){
+				iG["order"] = {};
+				$("#J_order_list").html(buildOrder(iG.order));
+				$("#price_txt").html(countPrice() + "元");
+                if(window.localStorage){
+                    localStorage["zaiG"] = JSON.stringify(iG);
+                }
+			});
+            
+			$("body").on("click","#J_menuList dd a",function(){
+                iG.indexMenu = $(this).attr("data_name");
+                $("#J_list_Container").html(listManger(iG.items));
+                $("#J_menuList .active").removeClass("active");
+                $(this).parent("dd").addClass("active");
+            });
+			$("#remote_order").click(function(){
+				$(".nav-tabs li.active").removeClass("active");
+				$(this).parent("li").addClass("active");
+				$("#form_desk").slideUp();
+				$("#form_more").slideUp();
+				$("#form_info").slideDown();
+			});
+			$("#now_order").click(function(){
+				$(".nav-tabs li.active").removeClass("active");
+				$(this).parent("li").addClass("active");
+				$("#form_desk").slideDown();
+				$("#form_more").slideDown();
+				$("#form_info").slideUp();
+			});
+			$("#J_btn_reg").click(function(){
+				$("#form_info").toggle("normal","linear");
+			
+			});
+			$("#submitOrder").click(function(){
+				$(".viewer:visible").removeClass("show").addClass("hide");
+				$("#submitView").removeClass("hide").addClass("show");
+			})
+			$("#cancelSubmit").click(function(){
+				$(".viewer:visible").removeClass("show").addClass("hide");
+				$("#wrapper2").removeClass("hide").addClass("show");
+			});
 		});
         function init(){
             setMenu(iG.items);
@@ -222,8 +349,22 @@
 				}
 			}
 		}
-
-	
+		function submit(){
+			var data = iG.order;
+			var result = [];
+			for(var i in data){
+				result.push({id:iG.order[i].id,counter:iG.order[i].counter});
+			}
+			return JSON.stringify(result);
+		}
+		
+		function countPrice(){
+			var price = 0;
+			for(var i in iG.order){
+				price += Number(iG.order[i].price)*iG.order[i].counter;
+			}
+			return price;
+		}
 		function listManger(_list){
 			var result = "";
 			var listArr = [];
@@ -247,6 +388,22 @@
 			for(var i in _list){
 				result += "<div class=\"col-md-4 clearfix foot-items\"><div class=\"col-xs-4 foot-img\"><img src=\""+_list[i].imageUrl+"\" class=\"img-responsive\" alt=\"Responsive image\" data_id=\""+_list[i].id+"\" ></div><div class=\"col-xs-6 foot-info\"><p><strong>"+_list[i].name+"</strong></p><p class=\"colred\">"+_list[i].price+"元/份</p><p><small>"+_list[i].sels+"人买过</small></p></div><div class=\"col-xs-2 icons-pick foot-pick\"><div class=\"btn_wrap\"><button class=\"minus\" style=\"display: none;\"><strong></strong></button><i style=\"display: none;\">0</i><button class=\"list_add list_id_respone\" data_id=\""+_list[i].id+"\"><strong></strong></button><em class=\"fixBig  fake\"></em></div></div></div>"
 				//<button ontouchstart=\"\" class=\"list_id_respone button button-circle button-flat-primary fa fa-plus\" data_id=\""+_list[i].id+"\"></button>	
+			}
+			return result;
+		}
+		function buildOrder(_list){
+			var result = "<div class=\"row\" id=\"J_order_Manager\"><div class=\"col-xs-12 clearfix board_content\"><div class=\"col-xs-4 title_contain\"><p class=\"menu_title \">点餐订单一览</p></div><div class=\"col-xs-2\"></div><div class=\"col-xs-3 title_contain\"><button class=\"button button-rounded button-flat-action\" id=\"addOrder\">选菜</button></div><div class=\"col-xs-3 title_contain\"><button id=\"clearOder\"class=\"button button-rounded button-flat\">清空</button></div></div></div>";
+			var check = true;
+			
+			for(var i in _list){
+				if(_list[i].counter === 0)continue;
+				check = false;
+				result += "<div class=\"row gray_line\"><div class=\"col-md-12 clearfix board_content\"><div class=\"col-xs-6\"><div class=\"col-md-6 clearfix order_item_name\"><label>"+_list[i].name+"</label></div><div class=\"col-md-6 clearfix order_price\">"+_list[i].price+"元一份</div></div><div class=\"col-xs-6\"><div class=\"btn_wrap counter\"><button class=\"list_minus counter_minus fl\" style=\"display: inline-block;\" data_id=\""+_list[i].id+"\" ontouchstart=\"\"><strong></strong></button><i class=\"nocounter fl\" style=\"display: inline-block;\">"+_list[i].counter+"</i><button class=\"list_add counter_plus\" data_id=\""+_list[i].id+"\" ontouchstart=\"\"><strong></strong></button><em class=\"fixBig  fake\"></em></div></div></div></div>";
+				
+				
+			}
+			if(check){
+				result += "<div class=\"row gray_line\"><div class=\"col-md-12 clearfix board_content\"><p style=\"text-align: center;\"><span>亲，还没选到心仪的菜喔，点选菜按钮开始选菜吧！</span></p></div></div>";
 			}
 			return result;
 		}
