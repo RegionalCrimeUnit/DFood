@@ -1,0 +1,35 @@
+﻿DROP TABLE IF EXISTS `#@_admin`;
+CREATE TABLE IF NOT EXISTS `#@_admin` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `adminName` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `adminPwd` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=2 ;
+
+DROP TABLE IF EXISTS `#@_message`;
+CREATE TABLE IF NOT EXISTS `#@_message` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `UserName` varchar(20) COLLATE utf8_unicode_ci NOT NULL,
+  `MsgContent` text COLLATE utf8_unicode_ci NOT NULL,
+  `DateTime` datetime NOT NULL,
+  UNIQUE KEY `Id` (`Id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=59 ;
+
+DROP TABLE IF EXISTS `#@_reply`;
+CREATE TABLE IF NOT EXISTS `#@_reply` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `belongId` int(16) NOT NULL,
+  `replyContent` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `dateTime` datetime NOT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=47 ;
+
+INSERT INTO `#@_message` (`Id`, `UserName`, `MsgContent`, `DateTime`) VALUES
+(1, 'TEST', 'TEST TEST TEST', '2010-09-12 13:32:02'),
+(2, 'test', 'test', '2010-09-12 13:31:36'),
+(3, '留言测试', '留言测试', '2010-09-12 13:33:48');
+
+INSERT INTO `#@_reply` (`Id`, `belongId`, `replyContent`, `dateTime`) VALUES
+(1, 1, 'REPLY TEST', '2010-09-12 13:32:16'),
+(2, 2, 'reply test', '2010-09-12 13:31:49'),
+(3, 3, '回复留言测试', '2010-09-12 13:34:00');
